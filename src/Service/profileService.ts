@@ -1,5 +1,5 @@
 import { api } from './api';
-import type { ProfileResponse, FollowToggleResponse, UserSearchResult, FollowListResponse } from '../types';
+import type { ProfileResponse, FollowToggleResponse, FollowListResponse } from '../types';
 
 export const profileService = {
   /**

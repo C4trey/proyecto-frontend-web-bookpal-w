@@ -17,7 +17,6 @@ export default function FollowButton({
   const { username: currentUsername } = useAuth();
   const [isFollowing, setIsFollowing] = useState<boolean>(initialFollowing ?? false);
   const [loading, setLoading] = useState(false);
-  const [followerCount, setFollowerCount] = useState(0);
 
   // No mostrar botón si es el mismo usuario
   if (currentUsername === username) {
@@ -39,7 +38,6 @@ export default function FollowButton({
       const response = await followService.toggleFollow(username);
       
       setIsFollowing(response.siguiendo);
-      setFollowerCount(response.totalFollowers);
       
       if (onFollowChange) {
         onFollowChange(response.siguiendo);

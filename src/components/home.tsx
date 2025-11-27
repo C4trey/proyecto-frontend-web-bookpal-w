@@ -3,7 +3,7 @@ import BookSection from "../components/books/BookSection";
 import BookGrid from "../components/books/BookGrid";
 import ReviewCard from "../components/reviews/ReviewCard";
 import SearchBar from "../components/books/SearchBar";
-import { Loader2, TrendingUp, Clock, Star, Sparkles } from "lucide-react";
+import { Loader2, Clock, Star, Sparkles } from "lucide-react";
 
 export default function Home() {
   const {
@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section con búsqueda */}
-      <section className="relative bg-gradient-to-br from-gray-900 via-red-900 to-black py-20 px-4">
+      <section className="relative bg-linear-to-br from-gray-900 via-red-900 to-black py-20 px-4">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570')] bg-cover bg-center opacity-10"></div>
         
         <div className="relative max-w-4xl mx-auto text-center">
@@ -105,15 +105,13 @@ export default function Home() {
                   <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
                     Reseñas Destacadas
                   </h2>
-                  <p className="text-gray-600 text-sm mt-1">
-                    Lo que la comunidad está diciendo
-                  </p>
+                  <p className="text-gray-600 text-sm mt-1">Lo que la comunidad está diciendo</p>
                 </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {popularReviews.map((review) => (
+              {(popularReviews as any[]).map((review: any) => (
                 <ReviewCard key={review.id} review={review} />
               ))}
             </div>

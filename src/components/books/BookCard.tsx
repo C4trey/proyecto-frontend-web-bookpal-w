@@ -21,10 +21,6 @@ export default function BookCard({ book, size = 'md' }: BookCardProps) {
     lg: 'aspect-[2/3]'
   };
 
-  useEffect(() => {
-    fetchLikeStatus();
-  }, [book.id]);
-
   const fetchLikeStatus = async () => {
     try {
       const status = await bookService.getLikeStatus(book.id);
@@ -34,6 +30,10 @@ export default function BookCard({ book, size = 'md' }: BookCardProps) {
       console.error("Error fetching like status:", err);
     }
   };
+
+  useEffect(() => {
+    fetchLikeStatus();
+  }, [book.id]);
 
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -67,7 +67,7 @@ export default function BookCard({ book, size = 'md' }: BookCardProps) {
               }}
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
+            <div className="w-full h-full bg-linear-to-br from-red-500 to-orange-500 flex items-center justify-center">
               <BookOpen className="w-16 h-16 text-white opacity-50" />
             </div>
           )}
@@ -83,7 +83,7 @@ export default function BookCard({ book, size = 'md' }: BookCardProps) {
           )}
 
           {/* Overlay con información al hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+          <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
             <h3 className="text-white font-bold text-sm line-clamp-2 mb-1">
               {book.titulo}
             </h3>
@@ -128,7 +128,7 @@ export default function BookCard({ book, size = 'md' }: BookCardProps) {
           <button
             onClick={handleLike}
             disabled={loadingLike}
-            className={`flex-shrink-0 transition-colors disabled:opacity-50 ${
+            className={`shrink-0 transition-colors disabled:opacity-50 ${
               liked ? "text-red-600" : "text-gray-400 hover:text-red-600"
             }`}
           >

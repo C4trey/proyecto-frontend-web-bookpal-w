@@ -1,12 +1,41 @@
 import { useState } from 'react';
-import { Search, ExternalLink, Trash2, Eye } from 'lucide-react';
+import { Search, Trash2, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../Service/api';
+
+type UserResult = {
+  id?: number;
+  _id?: string;
+  nombre?: string;
+  apellido?: string;
+  username?: string;
+  email?: string;
+};
+
+type BookResult = {
+  id?: number;
+  _id?: string;
+  titulo?: string;
+  autor?: string;
+  genero?: string;
+  anioPublicacion?: string | number;
+};
+
+type ReviewResult = {
+  id?: number;
+  _id?: string;
+  username?: string;
+  comentario?: string;
+  calificacion?: number;
+  libroId?: number;
+};
+
+type SearchResult = UserResult | BookResult | ReviewResult;
 
 export default function ModerationPanel() {
   const [searchType, setSearchType] = useState<'user' | 'book' | 'review'>('user');
   const [searchQuery, setSearchQuery] = useState('');
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -39,7 +68,12 @@ export default function ModerationPanel() {
     }
   };
 
-  const handleDelete = async (id: number, type: string) => {
+  const handleDelete = async (id: number | string, type: string) => {
+    if (id === undefined || id === null) {
+      alert('ID inválido');
+      return;
+    }
+
     if (!confirm(`¿Estás seguro de eliminar este ${type}?`)) return;
 
     try {
@@ -65,16 +99,16 @@ export default function ModerationPanel() {
     }
   };
 
-  const handleNavigate = (item: any, type: string) => {
+  const handleNavigate = (item: SearchResult, type: string) => {
     switch (type) {
       case 'user':
-        navigate(`/profile/${item.username}`);
+        navigate(`/profile/${(item as UserResult).username}`);
         break;
       case 'book':
-        navigate(`/books/${item.id}`);
+        navigate(`/books/${(item as BookResult).id}`);
         break;
       case 'review':
-        navigate(`/books/${item.libroId}`);
+        navigate(`/books/${(item as ReviewResult).libroId}`);
         break;
     }
   };
@@ -150,36 +184,36 @@ export default function ModerationPanel() {
               Resultados ({results.length})
             </h3>
             <div className="space-y-3">
-              {results.map((item) => (
+              {results.map((item: SearchResult, idx: number) => (
                 <div
-                  key={item.id}
+                  key={item.id ?? item._id ?? idx}
                   className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex-1">
                     {searchType === 'user' && (
                       <div>
-                        <p className="font-semibold">{item.nombre} {item.apellido}</p>
-                        <p className="text-sm text-gray-600">@{item.username}</p>
-                        <p className="text-sm text-gray-500">{item.email}</p>
+                        <p className="font-semibold">{(item as UserResult).nombre} {(item as UserResult).apellido}</p>
+                        <p className="text-sm text-gray-600">@{(item as UserResult).username}</p>
+                        <p className="text-sm text-gray-500">{(item as UserResult).email}</p>
                       </div>
                     )}
                     {searchType === 'book' && (
                       <div>
-                        <p className="font-semibold">{item.titulo}</p>
-                        <p className="text-sm text-gray-600">{item.autor}</p>
-                        <p className="text-sm text-gray-500">{item.genero} • {item.anioPublicacion}</p>
+                        <p className="font-semibold">{(item as BookResult).titulo}</p>
+                        <p className="text-sm text-gray-600">{(item as BookResult).autor}</p>
+                        <p className="text-sm text-gray-500">{(item as BookResult).genero} • {(item as BookResult).anioPublicacion}</p>
                       </div>
                     )}
                     {searchType === 'review' && (
                       <div>
-                        <p className="font-semibold">Reseña por {item.username}</p>
-                        <p className="text-sm text-gray-600">{item.comentario?.substring(0, 100)}...</p>
-                        <p className="text-sm text-gray-500">⭐ {item.calificacion}/5</p>
+                        <p className="font-semibold">Reseña por {(item as ReviewResult).username}</p>
+                        <p className="text-sm text-gray-600">{(item as ReviewResult).comentario?.substring(0, 100)}...</p>
+                        <p className="text-sm text-gray-500">⭐ {(item as ReviewResult).calificacion}/5</p>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                     {/* ✅ BOTÓN PARA IR AL RECURSO */}
                     <button
                       onClick={() => handleNavigate(item, searchType)}
@@ -192,7 +226,7 @@ export default function ModerationPanel() {
 
                     {/* Botón de eliminar */}
                     <button
-                      onClick={() => handleDelete(item.id, searchType)}
+                      onClick={() => handleDelete(item.id ?? item._id ?? idx, searchType)}
                       className="flex items-center gap-1 px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
                       title="Eliminar"
                     >

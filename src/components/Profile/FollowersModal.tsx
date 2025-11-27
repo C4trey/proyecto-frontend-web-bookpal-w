@@ -48,7 +48,7 @@ export default function FollowersModal({ username, onClose }: FollowersModalProp
       );
       
       setFollowers(followersWithStatus);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error al cargar seguidores:', err);
       setError('Error al cargar seguidores');
     } finally {
@@ -137,7 +137,7 @@ export default function FollowersModal({ username, onClose }: FollowersModalProp
                     <img
                       src={getAvatarUrl(user)}
                       alt={user.username}
-                      className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                      className="w-12 h-12 rounded-full object-cover shrink-0"
                       onError={(e) => {
                         e.currentTarget.src = `https://ui-avatars.com/api/?name=${user.nombre}+${user.apellido}&background=dc2626&color=fff&size=200`;
                       }}
@@ -156,7 +156,7 @@ export default function FollowersModal({ username, onClose }: FollowersModalProp
                       onClick={() => handleToggleFollow(user.username)}
                       disabled={user.isLoadingFollow}
                       className={`
-                        flex items-center gap-1 px-3 py-1.5 rounded-lg font-medium text-sm transition-all flex-shrink-0
+                        flex items-center gap-1 px-3 py-1.5 rounded-lg font-medium text-sm transition-all shrink-0
                         ${user.isFollowing
                           ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                           : 'bg-red-600 text-white hover:bg-red-700'

@@ -1,15 +1,28 @@
 import type { Book, User, PageResponse } from "../types";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-export const searchBooks = async (query: string): Promise<Book[]> => {
+export const searchBooks = async (
+  query: string,
+  page: number = 0,
+  size: number = 20
+): Promise<PageResponse<Book>> => {
 
   if (!query.trim()) {
-    return [];
+    return {
+      content: [],
+      totalElements: 0,
+      totalPages: 0,
+      size,
+      number: page,
+      first: page === 0,
+      last: true,
+      empty: true,
+    };
   }
 
   try {
     const res = await fetch(
-      `${API_URL}/libro/search?query=${query}&page=0&size=20`
+      `${API_URL}/libro/search?query=${encodeURIComponent(query)}&page=${page}&size=${size}`
     );
 
     if (!res.ok) {
@@ -18,10 +31,19 @@ export const searchBooks = async (query: string): Promise<Book[]> => {
 
     const data = await res.json();
 
-    return data.content || [];
+    return data as PageResponse<Book>;
   } catch (error) {
     console.error("Error en searchBooks:", error);
-    return [];
+    return {
+      content: [],
+      totalElements: 0,
+      totalPages: 0,
+      size,
+      number: page,
+      first: page === 0,
+      last: true,
+      empty: true,
+    };
   }
 };
 

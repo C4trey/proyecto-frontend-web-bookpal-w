@@ -29,7 +29,7 @@ export default function RecentLikes({ books }: RecentLikesProps) {
                   className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               ) : (
-                <div className="w-full h-40 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <div className="w-full h-40 bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center">
                   <p className="text-gray-500 text-xs text-center px-2">{book.titulo}</p>
                 </div>
               )}

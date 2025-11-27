@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+// navigation not used here
 import { Users, Loader2 } from 'lucide-react';
 import UserCard from '../components/users/UserCard';
 import UserSearchBar from '../components/users/UserSearchBar';
@@ -7,7 +7,7 @@ import { userService } from '../Service/userService';
 import type { UserSearchResult } from '../types';
 
 export default function MembersPage() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [users, setUsers] = useState<UserSearchResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -40,7 +40,7 @@ export default function MembersPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-br from-gray-900 via-red-900 to-black py-16 px-4">
+      <div className="bg-linear-to-br from-gray-900 via-red-900 to-black py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-white bg-opacity-20 rounded-full mb-6">
             <Users className="w-8 h-8 text-white" />

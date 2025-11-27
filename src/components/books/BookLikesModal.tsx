@@ -143,7 +143,7 @@ export default function BookLikesModal({ bookId, onClose }: BookLikesModalProps)
                     onClick={onClose}
                     className="flex items-center gap-3 flex-1 min-w-0"
                   >
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold shrink-0">
                       {user.username.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -161,7 +161,7 @@ export default function BookLikesModal({ bookId, onClose }: BookLikesModalProps)
                     <button
                       onClick={() => handleToggleFollow(user.username)}
                       disabled={user.isLoadingFollow}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-colors flex-shrink-0 ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-colors shrink-0 ${
                         user.isFollowing
                           ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
                           : "bg-red-600 text-white hover:bg-red-700"

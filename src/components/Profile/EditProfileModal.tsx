@@ -113,6 +113,13 @@ export default function EditProfileModal({ user, onClose, onSuccess }: EditProfi
       console.log('Refrescando datos del usuario...');
       await refreshUser();
 
+      // Llamar callback de éxito si fue provisto
+      try {
+        onSuccess && onSuccess();
+      } catch (err) {
+        console.warn('onSuccess callback error:', err);
+      }
+
       // ✅ 4. Esperar un poco y luego redirigir con window.location
       // Esto fuerza una recarga completa y actualiza todo
       setTimeout(() => {
@@ -156,7 +163,7 @@ export default function EditProfileModal({ user, onClose, onSuccess }: EditProfi
               </label>
               
               <div className="flex items-center gap-4">
-                <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 shrink-0">
                   {previewUrl ? (
                     <img
                       src={previewUrl}
@@ -164,7 +171,7 @@ export default function EditProfileModal({ user, onClose, onSuccess }: EditProfi
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-500 to-orange-500 text-white text-3xl font-bold">
+                    <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-red-500 to-orange-500 text-white text-3xl font-bold">
                       {formData.nombre.charAt(0)}
                     </div>
                   )}

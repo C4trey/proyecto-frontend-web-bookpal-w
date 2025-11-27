@@ -157,7 +157,7 @@ export default function UserSearchPage() {
         ) : (
           /* Estado inicial */
           <div className="text-center py-20">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-100 to-orange-100 rounded-full mb-6">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-red-100 to-orange-100 rounded-full mb-6">
               <Users className="w-10 h-10 text-red-600" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">
