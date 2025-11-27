@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/layout/Navbar"; // <--- AGREGA ESTO
 import { useAuth } from "../context/AuthContext";
 import { countries } from "../data/countries";
-import { updateMyProfile } from "../Service/userService";
-import { getMyFollowers, getMyFollowing } from "../Service/followService";
+import { userService } from "../Service/userService";
+import { followService } from "../Service/followService";
 import { reviewService } from "../Service/reviewService";
 import type { ReviewResponseDTO } from "../types";
-import { getMyFollowStats } from "../Service/userService";
+// Removed unused import of getMyFollowStats
 
 
 export default function Profile() {
@@ -24,8 +24,7 @@ export default function Profile() {
   } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [followers, setFollowers] = useState([]);
-  const [following, setFollowing] = useState([]);
+  // followers/following are loaded for reference but not rendered here
   const [stats, setStats] = useState({ followers: numFollowers, following: numFollowing });
   const [myReviews, setMyReviews] = useState<ReviewResponseDTO[]>([]);
   const [reviewCount, setReviewCount] = useState(0);
@@ -43,6 +42,8 @@ export default function Profile() {
     async function loadData() {
       try {
         const res = await reviewService.getMyReviews(0, 20);
+        // Some backend responses may use different pagination shapes
+        // Cast to `any` so we can safely check alternative property names
         const safe: any = res;
 
         const count =
@@ -76,11 +77,12 @@ export default function Profile() {
   useEffect(() => {
     async function loadFollowData() {
       try {
-        const f1 = await getMyFollowers();
-        const f2 = await getMyFollowing();
+        const f1 = await followService.getFollowers();
+        const f2 = await followService.getFollowing();
 
-        setFollowers(f1.content || []);
-        setFollowing(f2.content || []);
+        // currently not rendered directly in this component; keep logs for debugging
+        console.debug('Mis followers cargados:', f1.content?.length || 0);
+        console.debug('Mi following cargados:', f2.content?.length || 0);
       } catch (err) {
         console.error("Error loading followers:", err);
       }
@@ -90,8 +92,8 @@ export default function Profile() {
 
   useEffect(() => {
   async function loadStats() {
-    try {
-      const s = await getMyFollowStats();
+      try {
+        const s = await userService.getMyFollowStats();
       setStats({
         followers: s.followers,
         following: s.following,
@@ -114,7 +116,7 @@ export default function Profile() {
   // SAVE PROFILE
   const handleSave = async () => {
     try {
-      const updated = await updateMyProfile({
+      const updated = await userService.updateMyProfile({
         country: form.country,
         bio: form.bio,
         birthDate: form.birthDate === "" ? null : form.birthDate,

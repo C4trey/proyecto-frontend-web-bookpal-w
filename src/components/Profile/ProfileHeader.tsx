@@ -41,7 +41,7 @@ export default function ProfileHeader({
     <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Avatar */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           {usuario.profilePicture ? (
             <img
               src={usuario.profilePicture}

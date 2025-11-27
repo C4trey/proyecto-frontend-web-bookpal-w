@@ -12,10 +12,6 @@ export default function BookSearchResultCard({ book }: BookSearchResultCardProps
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
 
-  useEffect(() => {
-    fetchLikeStatus();
-  }, [book.id]);
-
   const fetchLikeStatus = async () => {
     try {
       const status = await bookService.getLikeStatus(book.id);
@@ -25,6 +21,10 @@ export default function BookSearchResultCard({ book }: BookSearchResultCardProps
       console.error("Error fetching like status:", err);
     }
   };
+
+  useEffect(() => {
+    fetchLikeStatus();
+  }, [book.id]);
 
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -46,7 +46,7 @@ export default function BookSearchResultCard({ book }: BookSearchResultCardProps
     >
       <div className="flex gap-4 p-4">
         {/* Portada del libro */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <div className="relative w-24 h-36 sm:w-32 sm:h-48 rounded-lg overflow-hidden shadow-md group-hover:shadow-lg transition-shadow">
             {book.portadaUrl ? (
               <img
@@ -58,7 +58,7 @@ export default function BookSearchResultCard({ book }: BookSearchResultCardProps
                 }}
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
+              <div className="w-full h-full bg-linear-to-br from-red-500 to-orange-500 flex items-center justify-center">
                 <BookOpen className="w-8 h-8 text-white opacity-50" />
               </div>
             )}

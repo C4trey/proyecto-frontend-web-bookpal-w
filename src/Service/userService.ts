@@ -29,4 +29,23 @@ export const userService = {
     const response = await api.get(`/api/usuarios/${username}/profile`);
     return response.data;
   }
+  ,
+  /**
+   * Actualizar datos del usuario autenticado (me)
+   */
+  updateMyProfile: async (data: { country?: string; bio?: string; birthDate?: string | null }) => {
+    const response = await api.put('/api/usuarios/me', data);
+    return response.data;
+  },
+
+  /**
+   * Obtener stats de followers/following del usuario autenticado
+   */
+  getMyFollowStats: async (): Promise<{ followers: number; following: number }> => {
+    const response = await api.get('/api/usuarios/me');
+    return {
+      followers: response.data.numFollowers ?? response.data.num_Followers ?? 0,
+      following: response.data.numFollowing ?? response.data.num_Following ?? 0,
+    };
+  }
 };

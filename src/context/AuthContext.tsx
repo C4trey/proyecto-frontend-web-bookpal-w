@@ -33,6 +33,7 @@ export interface IAuthContext {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  updateSession: (partial: Partial<Record<string, any>>) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
@@ -56,6 +57,7 @@ export const AuthContext = createContext<IAuthContext>({
   login: async () => {},
   logout: () => {},
   refreshUser: async () => {},
+  updateSession: () => {},
 });
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -220,6 +222,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [token, setSession]);
 
   // ======================================
+  // UPDATE SESSION (merge partial fields)
+  // ======================================
+  const updateSession = (partial: Partial<Record<string, any>>) => {
+    let current: any = {};
+    if (session) {
+      try {
+        current = JSON.parse(session);
+      } catch (err) {
+        console.error('Error parsing session in updateSession:', err);
+      }
+    }
+
+    const merged = { ...current, ...partial };
+    setSession(JSON.stringify(merged));
+  };
+
+  // ======================================
   // VALOR MEMOIZADO DEL CONTEXT
   // ======================================
   const value = useMemo(() => {
@@ -254,6 +273,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       login,
       logout,
       refreshUser,
+      updateSession,
     };
   }, [session, token, expiresOn, loading, refreshUser]); // ✅ Agregar loading a dependencias
 

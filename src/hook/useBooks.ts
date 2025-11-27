@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { bookService } from "../Service/bookService";
 import { recommendationService } from "../Service/recommendationService";
-import type { Book, RecommendationDTO } from "../types";
+import type { Book } from "../types";
 import { recommendationToBook } from "../types";
 
 export function useBooks() {
@@ -10,7 +10,7 @@ export function useBooks() {
   const [newBooks, setNewBooks] = useState<Book[]>([]);
   const [topBooks, setTopBooks] = useState<Book[]>([]);
   const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
-  const [popularReviews, setPopularReviews] = useState<any[]>([]); // Mantén tu tipo de Review
+  const [popularReviews, setPopularReviews] = useState<unknown[]>([]); // Mantén tu tipo de Review
 
   useEffect(() => {
     loadAllData();
@@ -52,6 +52,11 @@ export function useBooks() {
       setLoading(false);
     }
   };
+
+  // marcar setter como usado (puede rellenarse en el futuro con data real)
+  useEffect(() => {
+    setPopularReviews((prev) => prev);
+  }, []);
 
   return {
     loading,

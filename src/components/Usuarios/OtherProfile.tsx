@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import Navbar from "../layout/Navbar";
 import { useAuth } from "../../context/AuthContext";
-import { getUserByUsername, getUserStats } from "../../Service/userService";
+import { profileService } from "../../Service/profileService";
 import { reviewService } from "../../Service/reviewService";
-import { followService } from "../../Service/followService";
 import type { ReviewResponseDTO } from "../../types";
 import { countries } from "../../data/countries";
 
@@ -26,33 +25,26 @@ export default function OtherProfile() {
   useEffect(() => {
     async function load() {
       try {
-        // 1. Obtener usuario
-        const u = await getUserByUsername(safeUsername);
-        console.log("Usuario cargado:", u);
+        // 1. Obtener perfil completo (viene con usuario + stats)
+        const profile = await profileService.getProfile(safeUsername);
+        console.log("Perfil cargado:", profile);
+
+        const u = profile.usuario;
         setUser(u);
 
-        // Si el mapper no te está enviando el id, acá lo detectas
-        if (!u?.id) {
-          console.error("El usuario no tiene ID. Arregla el mapper.");
-          return;
-        }
-
-        // 2. Stats de seguidores / seguidos
-        const s = await getUserStats(safeUsername);
         setStats({
-          followers: s.followers ?? s.num_Followers ?? 0,
-          following: s.following ?? s.num_Following ?? 0,
+          followers: u.numFollowers ?? 0,
+          following: u.numFollowing ?? 0,
         });
 
+        // Reviews (intentamos cargar desde el servicio de reseñas)
         const r = await reviewService.getUserReviews(u.id, 0, 20);
         console.log("Reviews backend:", r);
+        setReviews(r.reviews ?? profile.recentReviews ?? []);
 
-        setReviews(r.reviews ?? []);  
-
-
-        // 4. Estado follow
-        const f = await followService.checkIfFollowing(safeUsername);
-        setIsFollowing(f.siguiendo === true);
+        // Estado follow
+        const f = await profileService.getFollowStatus(safeUsername);
+        setIsFollowing(!!f?.siguiendo);
 
       } catch (err) {
         console.error("Error cargando perfil:", err);
@@ -64,7 +56,7 @@ export default function OtherProfile() {
 
   const toggleFollowClick = async () => {
     try {
-      const res = await followService.toggle(safeUsername);
+      const res = await profileService.toggleFollow(safeUsername);
 
       setIsFollowing(res.siguiendo);
 

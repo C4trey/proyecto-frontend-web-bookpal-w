@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Edit, Search, AlertCircle, CheckCircle } from 'lucide-react';
+import { Plus, Edit, AlertCircle, CheckCircle } from 'lucide-react';
 import { adminService } from '../../Service/adminService';
 import type { UpdateBookRequest } from '../../Service/adminService';
 
@@ -10,6 +10,17 @@ export default function BookManagement() {
   
   // Para editar libro
   const [editingBook, setEditingBook] = useState<{ id: number; data: UpdateBookRequest } | null>(null);
+
+  // Helper para extraer un mensaje seguro desde un error desconocido (no usar `any`)
+  const parseErrorMessage = (err: unknown): string => {
+    if (err instanceof Error) return err.message;
+    if (typeof err === 'object' && err !== null && 'response' in err) {
+      const e = err as { response?: { data?: { message?: unknown } } };
+      const msg = e.response?.data?.message;
+      if (typeof msg === 'string') return msg;
+    }
+    return 'Error inesperado';
+  };
 
   const handleAddFromGoogle = async () => {
     if (!googleVolumeId.trim()) {
@@ -25,11 +36,11 @@ export default function BookManagement() {
         text: `Libro "${book.titulo}" agregado exitosamente` 
       });
       setGoogleVolumeId('');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error al agregar libro:', error);
       setMessage({ 
         type: 'error', 
-        text: error.response?.data?.message || 'Error al agregar libro desde Google Books' 
+        text: parseErrorMessage(error) || 'Error al agregar libro desde Google Books' 
       });
     } finally {
       setLoading(false);
@@ -55,11 +66,11 @@ export default function BookManagement() {
         text: `Libro "${book.titulo}" actualizado exitosamente` 
       });
       setEditingBook(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error al actualizar libro:', error);
       setMessage({ 
         type: 'error', 
-        text: error.response?.data?.message || 'Error al actualizar libro' 
+        text: parseErrorMessage(error) || 'Error al actualizar libro' 
       });
     } finally {
       setLoading(false);

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
 import { bookService } from '../../Service/bookService';
 
 interface AdvancedSearchFiltersProps {

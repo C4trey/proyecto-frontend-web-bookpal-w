@@ -135,7 +135,7 @@ export default function SearchBar({
                 }}
                 className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 flex items-center gap-3"
               >
-                <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <Search className="w-4 h-4 text-gray-400 shrink-0" />
                 <span className="text-gray-900 truncate">{suggestion}</span>
               </button>
             ))}

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { recommendationService } from '../Service/recommendationService';
 import { recommendationToBook } from '../types';
-import type { Book, RecommendationDTO, RecommendationReason } from '../types';
+import type { RecommendationDTO, RecommendationReason } from '../types';
 import BookCard from '../components/books/BookCard';
 import { Loader2, ArrowLeft, Sparkles, RefreshCw } from 'lucide-react';
 
@@ -114,7 +114,7 @@ export default function RecommendationsPage() {
               return (
                 <div key={rec.libroId} className="bg-white rounded-lg shadow-sm p-6">
                   <div className="flex gap-6">
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                       <BookCard book={book} size="sm" />
                     </div>
                     

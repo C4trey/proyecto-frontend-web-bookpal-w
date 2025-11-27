@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Star, Heart, MessageCircle } from "lucide-react";
+import { Star, Heart } from "lucide-react";
 import type { Review } from "../../types";
 
 interface ReviewCardProps {

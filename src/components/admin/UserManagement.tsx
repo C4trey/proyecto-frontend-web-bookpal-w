@@ -3,15 +3,26 @@ import { Search, UserCheck, UserX, Trash2, ExternalLink, Shield, User as UserIco
 import { useNavigate } from 'react-router-dom';
 import { adminService } from '../../Service/adminService';
 import { useAuth } from '../../context/AuthContext';
-import type { UsuarioAdminDTO } from '../../types';
+import type { User } from '../../types';
 
 export default function UserManagement() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [users, setUsers] = useState<UsuarioAdminDTO[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const navigate = useNavigate();
   const { username: currentUsername } = useAuth(); // ✅ Obtener username del contexto
+
+  // Helper para extraer un mensaje seguro desde un error desconocido
+  const parseErrorMessage = (err: unknown): string => {
+    if (err instanceof Error) return err.message;
+    if (typeof err === 'object' && err !== null && 'response' in err) {
+      const e = err as { response?: { data?: { message?: unknown } } };
+      const msg = e.response?.data?.message;
+      if (typeof msg === 'string') return msg;
+    }
+    return 'Error inesperado';
+  };
 
   useEffect(() => {
     loadAllUsers();
@@ -33,11 +44,11 @@ export default function UserManagement() {
       if (usersArray.length === 0) {
         setMessage({ type: 'error', text: 'No se encontraron usuarios' });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Error completo:', error);
       setMessage({ 
         type: 'error', 
-        text: error.response?.data?.message || 'Error al cargar usuarios' 
+        text: parseErrorMessage(error) || 'Error al cargar usuarios' 
       });
     } finally {
       setLoading(false);
@@ -61,11 +72,11 @@ export default function UserManagement() {
       if (usersArray.length === 0) {
         setMessage({ type: 'error', text: 'No se encontraron usuarios' });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error al buscar usuarios:', error);
       setMessage({ 
         type: 'error', 
-        text: error.response?.data?.message || 'Error al buscar usuarios' 
+        text: parseErrorMessage(error) || 'Error al buscar usuarios' 
       });
     } finally {
       setLoading(false);
@@ -89,11 +100,11 @@ export default function UserManagement() {
       });
       
       setTimeout(() => loadAllUsers(), 1000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Error al promover usuario:', error);
       setMessage({ 
         type: 'error', 
-        text: error.response?.data?.message || 'Error al promover usuario' 
+        text: parseErrorMessage(error) || 'Error al promover usuario' 
       });
     }
   };
@@ -115,11 +126,11 @@ export default function UserManagement() {
       });
       
       setTimeout(() => loadAllUsers(), 1000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Error al degradar usuario:', error);
       setMessage({ 
         type: 'error', 
-        text: error.response?.data?.message || 'Error al degradar usuario' 
+        text: parseErrorMessage(error) || 'Error al degradar usuario' 
       });
     }
   };
@@ -141,11 +152,11 @@ export default function UserManagement() {
       });
       
       setTimeout(() => loadAllUsers(), 1000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Error al eliminar usuario:', error);
       setMessage({ 
         type: 'error', 
-        text: error.response?.data?.message || 'Error al eliminar usuario' 
+        text: parseErrorMessage(error) || 'Error al eliminar usuario' 
       });
     }
   };
@@ -239,7 +250,7 @@ export default function UserManagement() {
                     <tr key={user.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10">
+                          <div className="shrink-0 h-10 w-10">
                             <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
                               <span className="text-red-600 font-semibold">
                                 {user.nombre?.[0]}{user.apellido?.[0]}

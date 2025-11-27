@@ -52,9 +52,30 @@ export default function AdminBookActions({ bookId, currentData, onUpdate }: Admi
       alert('✅ Libro actualizado exitosamente');
       setIsEditing(false);
       onUpdate();
-    } catch (error: any) {
+      } catch (error: unknown) {
       console.error('❌ Error al actualizar libro:', error);
-      alert(`Error: ${error.response?.data?.message || 'No se pudo actualizar el libro'}`);
+      // Safely derive an error message from different possible shapes
+      let errorMessage = 'No se pudo actualizar el libro';
+      if (error instanceof Error) {
+        errorMessage = error.message || errorMessage;
+      } else if (typeof error === 'object' && error !== null) {
+        const errObj = error as Record<string, unknown>;
+        const response = errObj['response'];
+        if (response && typeof response === 'object') {
+          const data = (response as Record<string, unknown>)['data'];
+          if (data && typeof data === 'object') {
+            const msg = (data as Record<string, unknown>)['message'];
+            if (typeof msg === 'string' && msg.length) {
+          errorMessage = msg;
+            }
+          }
+        }
+        if (!errorMessage) {
+          const msg = errObj['message'];
+          if (typeof msg === 'string' && msg.length) errorMessage = msg;
+        }
+      }
+      alert(`Error: ${errorMessage}`);
     } finally {
       setLoading(false);
     }

@@ -55,9 +55,9 @@ export default function BookLists({ lists, isOwnProfile, onCreateListClick }: Bo
                   {list.nombre}
                 </h3>
                 {list.isPublic ? (
-                  <Globe className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <Globe className="w-4 h-4 text-gray-400 shrink-0" />
                 ) : (
-                  <Lock className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <Lock className="w-4 h-4 text-gray-400 shrink-0" />
                 )}
               </div>
 
